@@ -1,0 +1,1462 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maranatha Gestion Pastoral UPeU</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section class="login-screen" id="login-screen">
+    <form class="login-card" id="login-form">
+      <div class="brand login-brand">
+        <span class="brand-mark">M</span>
+        <div>
+          <strong>Maranatha</strong>
+          <span>Gestion Pastoral UPeU</span>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow">Ingreso autorizado</p>
+        <h1>Acceso de capellania</h1>
+        <p class="login-help">Use su DNI como usuario y contraseña.</p>
+      </div>
+      <label>DNI / Usuario<input id="login-user" autocomplete="username" inputmode="numeric" required></label>
+      <label>Contraseña<input id="login-password" type="password" autocomplete="current-password" required></label>
+      <p class="login-error" id="login-error"></p>
+      <button class="primary-button" type="submit">Ingresar</button>
+    </form>
+  </section>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Menu principal">
+      <div class="brand">
+        <span class="brand-mark">M</span>
+        <div>
+          <strong>Maranatha</strong>
+          <span>Gestion Pastoral</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <span class="nav-section">Principal</span>
+        <button class="nav-item active" data-view="dashboard">Inicio</button>
+        <button class="nav-item" data-view="roles">Vistas por rol</button>
+        <button class="nav-item" data-view="students">Estudiantes</button>
+        <span class="nav-section">Area Pastoral</span>
+        <button class="nav-item" data-view="pastors">Pastores</button>
+        <button class="nav-item" data-view="chaplaincy">Capellanía</button>
+        <button class="nav-item" data-view="teaching">Docencia</button>
+        <span class="nav-section">Area Operativa</span>
+        <button class="nav-item" data-view="groups">Grupos Pequenos</button>
+        <button class="nav-item" data-view="classes">Maranatha Class</button>
+        <span class="nav-section">Area de Trabajo</span>
+        <button class="nav-item" data-view="visits">Visitas</button>
+        <button class="nav-item" data-view="training">Capacitaciones</button>
+        <button class="nav-item" data-view="events">Eventos</button>
+        <span class="nav-section">Reportes</span>
+        <button class="nav-item" data-view="reports">Reportes</button>
+      </nav>
+      <div class="sidebar-footer">
+        <span>Base cargada</span>
+        <strong>4,499 estudiantes</strong>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Universidad Peruana Union</p>
+          <h1 id="page-title">Panel de Capellania</h1>
+        </div>
+        <div class="actions">
+          <div class="session-user" id="session-user">Sin usuario</div>
+          <select id="role-switcher" class="role-switcher" title="Simular vista por rol">
+            <option value="general">Coordinador General</option>
+            <option value="faculty">Coordinador de Facultad</option>
+            <option value="chaplain">Docente Capellan</option>
+            <option value="smallGroup">Lider Grupo Pequeno</option>
+            <option value="classLeader">Lider Maranatha Class</option>
+          </select>
+          <button class="icon-button" id="global-search-button" title="Buscar" type="button">⌕</button>
+          <button class="ghost-button" id="logout-button" type="button">Salir</button>
+          <button class="primary-button" id="new-activity-button" type="button">Nueva actividad</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard">
+        <div class="role-home">
+          <div>
+            <p class="eyebrow" id="home-role-label">Ingreso como Coordinador General</p>
+            <h2 id="home-title">Vista general institucional</h2>
+            <p id="home-description">Supervision completa del trabajo pastoral, academico y eclesiastico de todas las facultades.</p>
+          </div>
+          <span class="pill" id="home-scope">Todas las facultades</span>
+        </div>
+
+        <div class="metrics" id="home-metrics"></div>
+
+        <div class="dashboard-grid">
+          <section class="panel wide">
+            <div class="panel-head">
+              <div>
+                <h2>Calendario mensual</h2>
+                <small>Eventos generales, facultades, grupos pequenos y Maranatha Class</small>
+              </div>
+              <div class="calendar-controls">
+                <button class="ghost-button" id="calendar-prev" type="button">Anterior</button>
+                <strong id="calendar-title">Mes</strong>
+                <button class="ghost-button" id="calendar-next" type="button">Siguiente</button>
+              </div>
+            </div>
+            <div class="calendar-legend">
+              <span><i class="event-general"></i>General</span>
+              <span><i class="event-facihed"></i>FACIHED</span>
+              <span><i class="event-fce"></i>FCE</span>
+              <span><i class="event-fia"></i>FIA</span>
+              <span><i class="event-fcs"></i>FCS</span>
+              <span><i class="event-teologia"></i>Teologia</span>
+            </div>
+            <div class="calendar-grid" id="calendar-grid"></div>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2 id="role-panel-title">Vista actual: Coordinador General</h2>
+              <span class="pill" id="role-scope">Todas las facultades</span>
+            </div>
+            <div class="role-preview" id="role-preview"></div>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Facultades</h2>
+              <button class="ghost-button" type="button" data-view-jump="students">Ver detalle</button>
+            </div>
+            <div class="bars" id="faculty-bars"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Semaforo pastoral</h2>
+            </div>
+            <div class="status-list">
+              <div><span class="dot red"></span> Sin contacto <strong>4,499</strong></div>
+              <div><span class="dot amber"></span> En seguimiento <strong>0</strong></div>
+              <div><span class="dot green"></span> Integrados <strong>0</strong></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 id="home-actions-title">Acciones de hoy</h2>
+            </div>
+            <ul class="task-list" id="home-actions"></ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="roles">
+        <div class="metrics">
+          <article class="metric">
+            <span>Roles principales</span>
+            <strong>5</strong>
+            <small>Con permisos diferenciados</small>
+          </article>
+          <article class="metric">
+            <span>Vista mas amplia</span>
+            <strong>General</strong>
+            <small>Todas las facultades</small>
+          </article>
+          <article class="metric">
+            <span>Vista operativa</span>
+            <strong>Pastor</strong>
+            <small>Solo estudiantes asignados</small>
+          </article>
+          <article class="metric alert">
+            <span>Regla clave</span>
+            <strong>Acceso</strong>
+            <small>Cada rol ve solo lo necesario</small>
+          </article>
+        </div>
+
+        <section class="panel full">
+          <div class="panel-head">
+            <h2>Matriz de vistas y permisos</h2>
+            <span class="pill">Propuesta funcional</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rol</th>
+                  <th>Alcance de datos</th>
+                  <th>Puede ver</th>
+                  <th>Puede registrar</th>
+                  <th>No deberia ver</th>
+                </tr>
+              </thead>
+              <tbody id="role-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel full admin-only hidden" id="role-assignment-panel">
+          <div class="panel-head">
+            <div>
+              <h2>Asignar roles a pastores</h2>
+              <small>Disponible para Coordinador General. Permite cambiar el rol operativo de cada pastor.</small>
+            </div>
+            <span class="pill">Administracion</span>
+          </div>
+          <form class="form inline-form" id="role-assignment-form">
+            <label>Pastor
+              <select id="role-assignment-user">
+                <option value="">Seleccione pastor</option>
+              </select>
+            </label>
+            <label>Rol
+              <select id="role-assignment-role">
+                <option value="Coordinador General">Coordinador General</option>
+                <option value="Coordinador de Facultad">Coordinador de Facultad</option>
+                <option value="Docente Capellan">Docente Capellan</option>
+              </select>
+            </label>
+            <button type="submit" class="primary-button">Guardar rol</button>
+            <p class="form-message" id="role-assignment-message"></p>
+          </form>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Jerarquia recomendada</h2>
+            </div>
+            <div class="access-flow">
+              <div>Director de Bienestar</div>
+              <span>↓</span>
+              <div>Coordinador General</div>
+              <span>↓</span>
+              <div>Coordinador de Facultad</div>
+              <span>↓</span>
+              <div>Docente Capellan</div>
+              <span>↓</span>
+              <div>Lideres GP / Maranatha</div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Controles necesarios</h2>
+            </div>
+            <ul class="task-list">
+              <li>Asignar rol a cada usuario.</li>
+              <li>Asignar facultad al coordinador de facultad.</li>
+              <li>Asignar estudiantes al docente capellan.</li>
+              <li>Asignar grupo pequeno al lider.</li>
+              <li>Asignar Maranatha Class al lider responsable.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="students">
+        <section class="panel full">
+          <div class="panel-head">
+            <h2>Busqueda avanzada</h2>
+            <div class="actions">
+              <label class="inline-select">Retirados
+                <select id="student-retired-filter">
+                  <option value="active">Solo activos</option>
+                  <option value="retired">Solo retirados</option>
+                  <option value="all">Todos</option>
+                </select>
+              </label>
+              <button class="ghost-button" id="clear-student-filters" type="button">Limpiar filtros</button>
+            </div>
+          </div>
+          <div class="student-filters">
+            <label>Buscar
+              <input id="student-search" type="search" placeholder="Codigo, nombre, DNI, celular, programa o facultad">
+            </label>
+            <label>Facultad
+              <select id="student-faculty-filter">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <label>Escuela / Programa
+              <select id="student-program-filter">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <label>Ciclo
+              <select id="student-cycle-filter">
+                <option value="">Todos</option>
+              </select>
+            </label>
+            <label>Grupo
+              <select id="student-group-filter">
+                <option value="">Todos</option>
+              </select>
+            </label>
+            <label>Modalidad
+              <select id="student-modality-filter">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <label>Sede
+              <select id="student-campus-filter">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <label>Religion
+              <select id="religion-filter">
+                <option value="">Todas</option>
+                <option value="Adventista">Adventistas</option>
+                <option value="No adventista">No adventistas</option>
+                <option value="Pendiente">Pendientes</option>
+              </select>
+            </label>
+            <label>Estado pastoral
+              <select id="student-pastoral-filter">
+                <option value="">Todos</option>
+                <option value="Sin contacto">Sin contacto</option>
+                <option value="Contactado">Contactado</option>
+                <option value="En seguimiento">En seguimiento</option>
+                <option value="Visitado">Visitado</option>
+                <option value="Integrado a Grupo Pequeno">Integrado a Grupo Pequeno</option>
+                <option value="Integrado a Maranatha Class">Integrado a Maranatha Class</option>
+              </select>
+            </label>
+          </div>
+        </section>
+        <section class="panel full">
+          <div class="panel-head">
+            <h2>Total de Estudiantes</h2>
+            <span class="pill" id="student-result-count">CSV preparado</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Estudiante</th>
+                  <th>Programa</th>
+                  <th>Ciclo</th>
+                  <th>Grupo</th>
+                  <th>Facultad</th>
+                  <th>Modalidad</th>
+                  <th>Sede</th>
+                  <th>Religion</th>
+                  <th>Estado</th>
+                  <th>Visita</th>
+                </tr>
+              </thead>
+              <tbody id="student-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="studentProfile">
+        <section class="panel full">
+          <div class="panel-head">
+            <h2>Ficha integral del estudiante</h2>
+            <button class="ghost-button" type="button" data-view-jump="students">Volver a estudiantes</button>
+          </div>
+          <div id="student-profile-empty" class="empty-profile">
+            Selecciona un estudiante desde la vista Estudiantes para ver su ficha.
+          </div>
+          <div id="student-profile-content" class="student-profile hidden">
+            <div class="profile-hero">
+              <div>
+                <p class="eyebrow" id="profile-code">Codigo</p>
+                <h2 id="profile-name">Estudiante</h2>
+                <p id="profile-program">Programa</p>
+              </div>
+              <span class="pill" id="profile-status">Estado</span>
+            </div>
+
+            <div class="profile-grid">
+              <section>
+                <h3>Datos academicos</h3>
+                <dl id="profile-academic"></dl>
+              </section>
+              <section>
+                <h3>Datos pastorales</h3>
+                <dl id="profile-pastoral"></dl>
+              </section>
+              <section>
+                <h3>Liderazgo</h3>
+                <dl id="profile-leadership"></dl>
+              </section>
+            </div>
+
+            <div class="profile-grid">
+              <section>
+                <h3>Asistencia Grupo Pequeno</h3>
+                <div class="attendance-box">
+                  <strong id="profile-smallgroup-attendance">Sin registros</strong>
+                  <span>Viernes de noche</span>
+                </div>
+              </section>
+              <section>
+                <h3>Asistencia Maranatha Class</h3>
+                <div class="attendance-box">
+                  <strong id="profile-class-attendance">Sin registros</strong>
+                  <span>Sabado de manana</span>
+                </div>
+              </section>
+              <section>
+                <h3>Alertas</h3>
+                <ul class="task-list" id="profile-alerts"></ul>
+              </section>
+            </div>
+
+            <section>
+              <h3>Historial de visitas</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Visitado por</th>
+                      <th>Motivo</th>
+                      <th>Resultado</th>
+                      <th>Accion</th>
+                    </tr>
+                  </thead>
+                  <tbody id="profile-visits"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="pastors">
+        <div class="metrics">
+          <article class="metric">
+            <span>Coordinadores de facultad</span>
+            <strong>5</strong>
+            <small>Incluye Teologia</small>
+          </article>
+          <article class="metric">
+            <span>Docentes capellanes</span>
+            <strong>15</strong>
+            <small>Asignables a escuelas y grupos</small>
+          </article>
+          <article class="metric">
+            <span>Coordinador general</span>
+            <strong>1</strong>
+            <small>Supervision institucional</small>
+          </article>
+          <article class="metric alert">
+            <span>Meta del equipo</span>
+            <strong>25</strong>
+            <small>Faltan 4 registros por incluir</small>
+          </article>
+        </div>
+
+        <section class="panel full">
+          <div class="panel-head">
+            <h2>Busqueda de pastores</h2>
+            <button class="ghost-button" id="clear-pastor-filters" type="button">Limpiar filtros</button>
+          </div>
+          <div class="student-filters">
+            <label>Buscar
+              <input id="pastor-search" type="search" placeholder="Nombre, celular, DNI, cargo o facultad">
+            </label>
+            <label>Facultad
+              <select id="pastor-faculty-filter">
+                <option value="">Todas</option>
+              </select>
+            </label>
+            <label>Rol / Cargo
+              <select id="pastor-role-filter">
+                <option value="">Todos</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Pastores y responsabilidades</h2>
+              <span class="pill" id="pastor-result-count">Lista inicial</span>
+            </div>
+            <div class="student-filters compact-filters">
+              <label>Retirados
+                <select id="student-retired-filter">
+                  <option value="active">Solo activos</option>
+                  <option value="retired">Solo retirados</option>
+                  <option value="all">Todos</option>
+                </select>
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nro.</th>
+                    <th>Docente</th>
+                    <th>Celular</th>
+                    <th>DNI</th>
+                    <th>Cargo</th>
+                    <th>Facultad</th>
+                    <th>Responsabilidad sugerida</th>
+                  </tr>
+                </thead>
+                <tbody id="pastor-table"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Cargos</h2>
+            </div>
+            <div class="status-list">
+              <div><span class="dot green"></span> Coordinador general <strong>1</strong></div>
+              <div><span class="dot amber"></span> Coordinador de facultad <strong>5</strong></div>
+              <div><span class="dot red"></span> Docente capellan <strong>15</strong></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Facultades</h2>
+            </div>
+            <ul class="task-list">
+              <li>FACIHED: Ciencias Humanas y Educacion.</li>
+              <li>FCE: Ciencias Empresariales.</li>
+              <li>FIA: Ingenieria y Arquitectura.</li>
+              <li>FCS: Ciencias de la Salud.</li>
+              <li>TEOLOGIA: Facultad de Teologia.</li>
+            </ul>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Asignaciones pendientes</h2>
+            </div>
+            <ul class="task-list">
+              <li>Completar DNI y celular de Felipe Esteban.</li>
+              <li>Asignar docentes capellanes por escuela academica.</li>
+              <li>Completar los 4 pastores faltantes para llegar a 25.</li>
+              <li>Definir cantidad de estudiantes por pastor.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="chaplaincy">
+        <div class="metrics">
+          <article class="metric">
+            <span>Matriculados en Formación Cristiana</span>
+            <strong id="chaplaincy-enrolled">0</strong>
+            <small>Atendidos por el pastor/docente del curso</small>
+          </article>
+          <article class="metric alert">
+            <span>No matriculados</span>
+            <strong id="chaplaincy-unenrolled">0</strong>
+            <small>Aun no se ha cargado esa lista</small>
+          </article>
+          <article class="metric">
+            <span>Ya asignados por capellanía</span>
+            <strong id="chaplaincy-assigned">0</strong>
+            <small>Se iniciara desde cero</small>
+          </article>
+          <article class="metric">
+            <span>Pendientes de atención</span>
+            <strong id="chaplaincy-pending">0</strong>
+            <small>Depende del ingreso de no matriculados</small>
+          </article>
+        </div>
+
+        <div class="module-layout">
+          <section class="panel wide">
+            <div class="panel-head">
+              <div>
+                <h2>Carga pastoral por pastor</h2>
+                <small>Cada pastor atiende alumnos de sus cursos y alumnos asignados por el coordinador.</small>
+              </div>
+            </div>
+            <div class="student-filters compact-filters">
+              <label>Facultad del pastor
+                <select id="chaplaincy-pastor-faculty-filter">
+                  <option value="">Todas las facultades</option>
+                </select>
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Pastor</th>
+                    <th>Facultad</th>
+                    <th>Por docencia</th>
+                    <th>Asignados</th>
+                    <th>Total pastoral</th>
+                  </tr>
+                </thead>
+                <tbody id="chaplaincy-load-table"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <div>
+                <h2>Estudiantes no matriculados en Formación Cristiana</h2>
+                <small>Aun falta ingresar la lista real para iniciar el proceso de asignación pastoral.</small>
+              </div>
+              <span class="pill warning" id="chaplaincy-unassigned-count">0 pendientes</span>
+            </div>
+            <div class="student-filters compact-filters">
+              <label>Buscar
+                <input id="chaplaincy-search" type="search" placeholder="Codigo, nombre, DNI, programa o facultad">
+              </label>
+              <label>Facultad
+                <select id="chaplaincy-faculty-filter">
+                  <option value="">Todas las facultades</option>
+                </select>
+              </label>
+              <label>Modalidad
+                <select id="chaplaincy-modality-filter">
+                  <option value="">Todas las modalidades</option>
+                </select>
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Estudiante</th>
+                    <th>Facultad</th>
+                    <th>Ciclo</th>
+                    <th>Programa</th>
+                    <th>Pastor asignado</th>
+                    <th>Asignar</th>
+                  </tr>
+                </thead>
+                <tbody id="chaplaincy-unassigned-table"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel wide">
+            <div class="panel-head">
+              <div>
+                <h2>Estudiantes asignados por capellanÃ­a</h2>
+                <small>Estos registros ya fueron derivados a un pastor y permanecen guardados en esta computadora.</small>
+              </div>
+              <span class="pill" id="chaplaincy-assigned-list-count">0 asignados</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>CÃ³digo</th>
+                    <th>Estudiante</th>
+                    <th>Facultad</th>
+                    <th>Ciclo</th>
+                    <th>Programa</th>
+                    <th>Pastor asignado</th>
+                    <th>AcciÃ³n</th>
+                  </tr>
+                </thead>
+                <tbody id="chaplaincy-assigned-table"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="teaching">
+        <div class="metrics">
+          <article class="metric">
+            <span>Estudiantes asignados</span>
+            <strong id="teaching-enrolled">0</strong>
+            <small>Matricula manual en cursos</small>
+          </article>
+          <article class="metric">
+            <span>Cursos de Formación Cristiana</span>
+            <strong id="teaching-courses">0</strong>
+            <small>Distribuidos por pastor/docente</small>
+          </article>
+          <article class="metric">
+            <span>Promedio por pastor</span>
+            <strong id="teaching-average">0</strong>
+            <small>Cursos asignados por pastor</small>
+          </article>
+          <article class="metric alert">
+            <span>Sin asignar a docencia</span>
+            <strong id="teaching-unenrolled">0</strong>
+            <small>Pendientes de matricula manual</small>
+          </article>
+        </div>
+
+        <div class="module-layout">
+          <section class="panel wide">
+            <div class="panel-head">
+              <div>
+                <h2>Cursos de Formación Cristiana por docente</h2>
+                <small>La docencia cubre pastoralmente a los alumnos matriculados en Formación Cristiana.</small>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Pastor - Capellan</th>
+                    <th>Facultades</th>
+                    <th>Cursos</th>
+                    <th>Estudiantes</th>
+                    <th>Promedio</th>
+                    <th>AcciÃ³n</th>
+                  </tr>
+                </thead>
+                <tbody id="teaching-course-table"></tbody>
+              </table>
+              <div class="student-filters compact-filters">
+                <label>Pastor
+                  <input id="teaching-pastor-filter" placeholder="Buscar pastor">
+                </label>
+                <label>Facultad
+                  <select id="teaching-faculty-filter">
+                    <option value="">Todas</option>
+                  </select>
+                </label>
+                <label>Curso
+                  <select id="teaching-course-filter">
+                    <option value="">Todos</option>
+                  </select>
+                </label>
+                <label>Ciclo
+                  <select id="teaching-cycle-filter">
+                    <option value="">Todos</option>
+                  </select>
+                </label>
+                <label>Grupo
+                  <select id="teaching-group-filter">
+                    <option value="">Todos</option>
+                  </select>
+                </label>
+                <label>Carrera
+                  <input id="teaching-career-filter" placeholder="Buscar carrera">
+                </label>
+                <label>Acciones
+                  <button class="ghost-button" id="clear-teaching-filters" type="button">Limpiar filtros</button>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel wide hidden" id="teaching-course-detail-panel">
+            <div class="panel-head">
+              <div>
+                <h2 id="teaching-course-detail-title">Detalle del curso</h2>
+                <small id="teaching-course-detail-subtitle">Seleccione un curso para ver sus alumnos.</small>
+              </div>
+              <span class="pill" id="teaching-course-detail-count">0 alumnos</span>
+            </div>
+            <dl id="teaching-course-detail-meta"></dl>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr id="teaching-course-detail-head">
+                    <th>Detalle</th>
+                    <th>Facultad</th>
+                    <th>Carrera / Programa</th>
+                    <th>Curso / Estado</th>
+                    <th>Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody id="teaching-course-detail-students"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel wide" id="teaching-enrollment-panel">
+            <div class="panel-head">
+              <div>
+                <h2>Agregar alumno a curso</h2>
+                <small>Matricula rápida para vincular un estudiante con su curso de Formación Cristiana.</small>
+              </div>
+              <span class="pill" id="teaching-enrollment-count">0 vinculados</span>
+            </div>
+            <form class="form inline-form" id="teaching-enrollment-form">
+              <label>Curso
+                <select id="teaching-enrollment-course">
+                  <option value="">Seleccione curso</option>
+                </select>
+              </label>
+              <label>Buscar estudiante
+                <input id="teaching-enrollment-student-search" placeholder="Codigo, DNI o nombre">
+              </label>
+              <button type="submit" class="primary-button">Agregar alumno</button>
+              <div class="student-results" id="teaching-enrollment-student-results"></div>
+              <div class="selected-student hidden" id="teaching-enrollment-selected"></div>
+              <p class="form-message" id="teaching-enrollment-message"></p>
+            </form>
+            <form class="form inline-form bulk-import-form" id="teaching-bulk-import-form">
+              <label>Curso para carga masiva
+                <select id="teaching-bulk-course">
+                  <option value="">Seleccione curso</option>
+                </select>
+              </label>
+              <label>Archivo de códigos
+                <input id="teaching-bulk-file" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls">
+              </label>
+              <button type="submit" class="primary-button">Subir códigos</button>
+              <p class="form-message" id="teaching-bulk-message"></p>
+            </form>
+          </section>
+
+        </div>
+      </section>
+
+      <section class="view" id="groups">
+        <div class="module-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Crear grupo pequeno</h2>
+            </div>
+            <form class="form" id="small-group-form">
+              <label>Nombre<input id="small-group-name" placeholder="Ej. GP Medicina 1"></label>
+              <label>Pastor responsable
+                <select id="small-group-pastor">
+                  <option value="">Seleccione pastor</option>
+                </select>
+              </label>
+              <label>Facultad
+                <select id="small-group-faculty">
+                  <option value="">Seleccione facultad</option>
+                </select>
+              </label>
+              <label>Reunion<select id="small-group-meeting"><option>Viernes de noche</option><option>Viernes de tarde</option></select></label>
+              <label>Lugar habitual<input id="small-group-place" placeholder="Aula, ambiente o direccion"></label>
+              <button type="submit" class="primary-button">Guardar grupo</button>
+            </form>
+          </section>
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Grupos pequenos creados</h2>
+              <span class="pill" id="small-group-count">0 grupos</span>
+            </div>
+            <div class="student-filters compact-filters">
+              <label>Buscar grupo
+                <input id="small-group-search" type="search" placeholder="Nombre, pastor, facultad o lugar">
+              </label>
+              <label>Facultad
+                <select id="small-group-faculty-filter">
+                  <option value="">Todas</option>
+                </select>
+              </label>
+              <label>Pastor responsable
+                <select id="small-group-pastor-filter">
+                  <option value="">Todos</option>
+                </select>
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Pastor responsable</th>
+                    <th>Facultad</th>
+                    <th>Reunion</th>
+                    <th>Lugar</th>
+                  </tr>
+                </thead>
+                <tbody id="small-group-table"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel wide hidden" id="small-group-info-panel">
+            <div class="panel-head">
+              <h2>Cuadro informativo del grupo pequeno</h2>
+              <div class="actions">
+                <button class="ghost-button" id="small-group-save-all" type="button">Guardar todo</button>
+                <button class="primary-button" id="small-group-convert" type="button">Convertir a Maranatha Class</button>
+              </div>
+            </div>
+            <div class="info-board" id="small-group-info-board">
+              <section>
+                <h3>Lideres y contactos</h3>
+                <form class="form compact-form" id="small-group-leaders-form">
+                  <label>Lider<input id="small-group-leader" placeholder="Nombre y contacto"></label>
+                  <label>Colider<input id="small-group-co-leader" placeholder="Nombre y contacto"></label>
+                  <label>Consejero<input id="small-group-counselor" placeholder="Docente capellan o pastor"></label>
+                  <button type="submit" class="primary-button">Guardar lideres</button>
+                </form>
+              </section>
+              <section>
+                <h3>Identidad</h3>
+                <form class="form compact-form" id="small-group-identity-form">
+                  <label>Logo oficial<input id="small-group-logo" placeholder="Descripcion o enlace"></label>
+                  <label>Banner<input id="small-group-banner" placeholder="Descripcion o enlace"></label>
+                  <label>Foto del grupo<input id="small-group-photo" placeholder="Descripcion o enlace"></label>
+                  <label>Versiculo favorito<input id="small-group-verse"></label>
+                  <label>Lema<input id="small-group-motto"></label>
+                  <label>Lugar habitual<input id="small-group-regular-place"></label>
+                  <button type="submit" class="primary-button">Guardar identidad</button>
+                </form>
+              </section>
+              <section>
+                <h3>Registro de miembros</h3>
+                <label class="member-search-label">Buscar estudiante
+                  <input id="small-group-member-search" type="search" placeholder="Codigo, nombre o DNI">
+                </label>
+                <div class="search-results" id="small-group-member-results"></div>
+                <div class="member-list" id="small-group-member-list"></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Relacion Grupo Pequeno → Maranatha Class</h2>
+            </div>
+            <div class="workflow">
+              <div>1 Grupo Pequeno</div>
+              <span>→</span>
+              <div>O union de 2 a 3 grupos</div>
+              <span>→</span>
+              <div>Lista de miembros de Maranatha Class</div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="classes">
+        <div class="metrics">
+          <article class="metric">
+            <span>Total Maranatha Class</span>
+            <strong>39</strong>
+            <small>Segun listado enviado</small>
+          </article>
+          <article class="metric">
+            <span>Ciencias de la Salud</span>
+            <strong>14</strong>
+            <small>Mayor cantidad de clases</small>
+          </article>
+          <article class="metric">
+            <span>Ingenieria y Arquitectura</span>
+            <strong>15</strong>
+            <small>Incluye aulas E203 a E406</small>
+          </article>
+          <article class="metric alert">
+            <span>Sin aula asignada</span>
+            <strong>4</strong>
+            <small>Requiere completar ubicacion</small>
+          </article>
+        </div>
+
+        <div class="toolbar">
+          <input id="class-search" type="search" placeholder="Buscar Maranatha Class, aula o facultad">
+          <select id="faculty-filter">
+            <option value="">Todas las facultades</option>
+            <option value="Salud">Ciencias de la Salud</option>
+            <option value="Empresariales">Ciencias Empresariales</option>
+            <option value="Humanas">Ciencias Humanas y Educacion</option>
+            <option value="Ingenieria">Ingenieria y Arquitectura</option>
+          </select>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Maranatha Class registradas</h2>
+              <button class="primary-button" type="button" data-view-jump="groups">Nueva clase</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Facultad</th>
+                    <th>Aula</th>
+                    <th>Nombre ES</th>
+                    <th>Uso en el modulo</th>
+                  </tr>
+                </thead>
+                <tbody id="class-table"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Resumen por facultad</h2>
+            </div>
+            <div class="bars" id="class-bars"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Proxima configuracion</h2>
+            </div>
+            <ul class="task-list">
+              <li>Asignar pastor responsable por cada Maranatha Class.</li>
+              <li>Relacionar grupos pequenos que alimentan cada clase.</li>
+              <li>Completar aulas pendientes.</li>
+              <li>Registrar estudiantes inscritos y asistencia sabatica.</li>
+            </ul>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Cuadro informativo de Maranatha Class</h2>
+              <span class="pill">Estructura oficial</span>
+            </div>
+            <div class="info-board maranatha-board">
+              <section>
+                <h3>Lideres y equipo</h3>
+                <div class="role-tags">
+                  <span>Lider</span>
+                  <span>Colider</span>
+                  <span>Secretario</span>
+                  <span>Tesorero</span>
+                  <span>Maestro</span>
+                  <span>Ministerio Personal</span>
+                  <span>Consejero</span>
+                </div>
+                <p>El consejero normalmente sera un docente capellan o pastor asignado.</p>
+              </section>
+              <section>
+                <h3>Identidad</h3>
+                <dl>
+                  <dt>Nombre de clase</dt><dd>Nombre oficial de Maranatha Class</dd>
+                  <dt>Logo oficial</dt><dd>Previa coordinacion con coordinador de facultad</dd>
+                  <dt>Banner</dt><dd>Imagen principal de la clase</dd>
+                  <dt>Foto grupal</dt><dd>Con identificacion visual institucional</dd>
+                  <dt>Versiculo favorito</dt><dd>Pendiente registrar</dd>
+                  <dt>Lema</dt><dd>Pendiente registrar</dd>
+                  <dt>Lugares habituales</dt><dd>Aula o ambiente de reunion</dd>
+                </dl>
+              </section>
+              <section>
+                <h3>Registro de miembros</h3>
+                <p>La lista de miembros se forma desde uno o varios grupos pequenos asociados. Esa lista sera usada para asistencia sabatica, reportes y seguimiento pastoral.</p>
+                <button class="primary-button" type="button" data-view-jump="groups">Asociar grupos pequenos</button>
+              </section>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="visits">
+        <div class="module-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Registrar visita</h2>
+            </div>
+            <form class="form" id="visit-form">
+              <label>Tipo<select id="visit-type"><option>Estudiante</option><option>Familia de estudiante</option><option>Docente</option></select></label>
+              <label>Buscar estudiante
+                <input id="visit-student-search" type="search" placeholder="Codigo, nombres, apellidos o DNI">
+              </label>
+              <div class="search-results" id="visit-student-results"></div>
+              <div class="selected-student hidden" id="selected-visit-student"></div>
+              <label>Motivo<select id="visit-reason"><option>Acompanamiento espiritual</option><option>Seguimiento por inasistencia</option><option>Salud emocional</option></select></label>
+              <label>Fecha<input id="visit-date" type="date"></label>
+              <label>Resultado<textarea id="visit-result" placeholder="Observaciones pastorales"></textarea></label>
+              <p class="form-message" id="visit-message"></p>
+              <button type="submit" class="primary-button">Guardar visita</button>
+            </form>
+          </section>
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Seguimientos pendientes</h2>
+            </div>
+            <ul class="timeline">
+              <li><strong>Sin contacto pastoral</strong><span>4,499 estudiantes requieren primera accion</span></li>
+              <li><strong>Sin religion registrada</strong><span>899 estudiantes requieren entrevista o encuesta</span></li>
+              <li><strong>Sin grupo pequeno</strong><span>La mayoria aun no tiene grupo asignado</span></li>
+            </ul>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Todas las visitas registradas</h2>
+              <span class="pill" id="visit-count">0 visitas</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Estudiante</th>
+                    <th>Codigo</th>
+                    <th>Visitado por</th>
+                    <th>Motivo</th>
+                    <th>Resultado</th>
+                    <th>Accion</th>
+                  </tr>
+                </thead>
+                <tbody id="visit-table"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Mis visitas realizadas</h2>
+              <span class="pill" id="my-visit-count">0 visitas</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Estudiante</th>
+                    <th>Codigo</th>
+                    <th>Motivo</th>
+                    <th>Resultado</th>
+                  </tr>
+                </thead>
+                <tbody id="my-visit-table"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="training">
+        <div class="module-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Crear capacitacion</h2>
+            </div>
+            <form class="form" id="training-form">
+              <label>Nivel
+                <select id="training-level">
+                  <option value="General">General - Toda la UPeU</option>
+                  <option value="Facultad">Facultad - Solo una facultad</option>
+                  <option value="Escuela">Escuela / Programa - Segun facultad</option>
+                </select>
+              </label>
+              <label>Facultad
+                <select id="training-faculty">
+                  <option value="">Seleccione facultad</option>
+                </select>
+              </label>
+              <label>Escuela / Programa
+                <select id="training-program">
+                  <option value="">Primero seleccione facultad</option>
+                </select>
+              </label>
+              <label>Responsable
+                <select id="training-responsible">
+                  <option value="">Seleccione responsable</option>
+                </select>
+              </label>
+              <label>Titulo<input id="training-title" placeholder="Ej. Liderazgo espiritual"></label>
+              <label>Fecha<input id="training-date" type="date"></label>
+              <label>Descripcion<textarea id="training-description" placeholder="Objetivo o tema principal"></textarea></label>
+              <button type="submit" class="primary-button">Guardar capacitacion</button>
+            </form>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Capacitaciones registradas</h2>
+              <span class="pill" id="training-count">0 capacitaciones</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nivel</th>
+                    <th>Alcance</th>
+                    <th>Titulo</th>
+                    <th>Responsable</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="training-table"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="events">
+        <div class="module-layout">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Crear evento</h2>
+            </div>
+            <form class="form" id="event-form">
+              <label>Nivel
+                <select id="event-level">
+                  <option value="General">General - Toda la UPeU</option>
+                  <option value="Facultad">Facultad - Solo una facultad</option>
+                  <option value="Escuela">Escuela / Programa - Segun facultad</option>
+                </select>
+              </label>
+              <label>Facultad
+                <select id="event-faculty">
+                  <option value="">Seleccione facultad</option>
+                </select>
+              </label>
+              <label>Escuela / Programa
+                <select id="event-program">
+                  <option value="">Primero seleccione facultad</option>
+                </select>
+              </label>
+              <label>Responsable
+                <select id="event-responsible">
+                  <option value="">Seleccione responsable</option>
+                </select>
+              </label>
+              <label>Tipo de evento
+                <select id="event-type">
+                  <option>Academico-pastoral</option>
+                  <option>Eclesiastico</option>
+                  <option>Grupo Pequeno</option>
+                  <option>Maranatha Class</option>
+                  <option>Consejo de Maestros</option>
+                  <option>Facultades en Mision</option>
+                  <option>Enjoy</option>
+                  <option>Semana espiritual</option>
+                  <option>Servicio comunitario</option>
+                  <option>Integracion</option>
+                </select>
+              </label>
+              <label>Titulo<input id="event-title" placeholder="Ej. Culto especial de facultad"></label>
+              <label>Fecha<input id="event-date" type="date"></label>
+              <label>Hora<input id="event-time" type="time"></label>
+              <label>Descripcion<textarea id="event-description" placeholder="Objetivo o detalle del evento"></textarea></label>
+              <button type="submit" class="primary-button">Guardar evento</button>
+            </form>
+          </section>
+
+          <section class="panel wide">
+            <div class="panel-head">
+              <h2>Eventos registrados</h2>
+              <span class="pill" id="event-count">0 eventos</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nivel</th>
+                    <th>Alcance</th>
+                    <th>Tipo</th>
+                    <th>Titulo</th>
+                    <th>Responsable</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                  </tr>
+                </thead>
+                <tbody id="event-table"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="reports">
+        <section class="reports-hero">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Indicadores pastorales y académicos</p>
+              <h2>Reportes ejecutivos</h2>
+              <small>Explora primero por facultad y luego profundiza por escuela, pastor o actividad.</small>
+            </div>
+            <button class="ghost-button" id="export-report-button" type="button">Exportar Excel</button>
+          </div>
+          <div class="report-grid">
+            <button>Reporte por facultad</button>
+            <button>Reporte por escuela</button>
+            <button>Reporte por pastor</button>
+            <button>Reporte por actividad</button>
+            <button>Estadísticas de Formación Cristiana por pastor</button>
+          </div>
+        </section>
+        <section class="panel full">
+          <div class="panel-head">
+            <div>
+              <h2>Respaldo local</h2>
+              <small>Guarda visitas, eventos, grupos, roles y asignaciones en un archivo restaurable.</small>
+            </div>
+            <span class="pill">Archivo JSON</span>
+          </div>
+          <div class="actions backup-actions">
+            <button class="primary-button" id="backup-export-button" type="button">Guardar copia de seguridad</button>
+            <button class="ghost-button" id="backup-show-button" type="button">Mostrar respaldo para copiar</button>
+            <button class="ghost-button" id="backup-import-button" type="button">Restaurar copia</button>
+            <input class="hidden" id="backup-import-file" type="file" accept=".json,application/json">
+          </div>
+          <div class="form backup-text-panel hidden" id="backup-text-panel">
+            <label>Texto de respaldo
+              <textarea id="backup-text-output" rows="8" readonly></textarea>
+            </label>
+            <button class="ghost-button" id="backup-copy-button" type="button">Copiar texto</button>
+            <label>Restaurar pegando texto
+              <textarea id="backup-text-input" rows="5" placeholder="Pegue aqui el texto JSON del respaldo"></textarea>
+            </label>
+            <button class="primary-button" id="backup-restore-text-button" type="button">Restaurar desde texto</button>
+          </div>
+          <p class="form-message" id="backup-message"></p>
+        </section>
+        <section class="panel full">
+          <div class="panel-head">
+            <div>
+              <h2>Formación Cristiana por facultad</h2>
+              <small>Cantidades visibles según el rol actual, sin mostrar nombres de estudiantes.</small>
+            </div>
+            <span class="pill" id="formation-course-report-count">0 cursos</span>
+          </div>
+          <div class="faculty-report-grid" id="formation-faculty-report"></div>
+        </section>
+        <section class="panel full">
+          <div class="panel-head">
+            <div>
+              <h2>Reporte de visitas</h2>
+              <small>Resumen de visitas pastorales registradas por responsable y facultad.</small>
+            </div>
+            <span class="pill" id="visit-report-count">0 visitas</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>NÂ°</th>
+                  <th>Responsable</th>
+                  <th>Facultad</th>
+                  <th>Visitas</th>
+                  <th>Ãšltima visita</th>
+                  <th>Motivos principales</th>
+                </tr>
+              </thead>
+              <tbody id="visit-report-table"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel full">
+          <div class="panel-head">
+            <div>
+              <h2>Estadísticas por pastor</h2>
+              <small>Detalle agrupado por facultad para cursos de Formación Cristiana.</small>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>N°</th>
+                  <th>Pastor / Capellán</th>
+                  <th>Facultad</th>
+                  <th>Cursos asignados</th>
+                  <th>Estudiantes asignados</th>
+                  <th>Promedio por curso</th>
+                </tr>
+              </thead>
+              <tbody id="formation-course-report-table"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel full">
+          <div class="panel-head">
+            <div>
+              <h2>Estudiantes retirados</h2>
+              <small>Se reportan aparte y no cuentan en estudiantes activos, docencia ni capellanÃ­a.</small>
+            </div>
+            <span class="pill" id="retired-report-count">0 retirados</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>CÃ³digo</th>
+                  <th>Estudiante</th>
+                  <th>Facultad</th>
+                  <th>Ciclo</th>
+                  <th>Programa</th>
+                  <th>Fecha</th>
+                  <th>AcciÃ³n</th>
+                </tr>
+              </thead>
+              <tbody id="retired-report-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="event-detail-modal">
+    <section class="modal">
+      <div class="panel-head">
+        <h2 id="event-detail-title">Detalle del evento</h2>
+        <button class="ghost-button" id="event-detail-close" type="button">Cerrar</button>
+      </div>
+      <dl id="event-detail-body"></dl>
+      <form class="form hidden" id="event-edit-form">
+        <label>Titulo<input id="event-edit-title"></label>
+        <label>Naturaleza / Tipo
+          <select id="event-edit-type">
+            <option>Academico-pastoral</option>
+            <option>Eclesiastico</option>
+            <option>Grupo Pequeno</option>
+            <option>Maranatha Class</option>
+            <option>Consejo de Maestros</option>
+            <option>Facultades en Mision</option>
+            <option>Enjoy</option>
+            <option>Fogata</option>
+            <option>Semana espiritual</option>
+            <option>Servicio comunitario</option>
+            <option>Integracion</option>
+          </select>
+        </label>
+        <label>Nivel
+          <select id="event-edit-level">
+            <option value="General">General - Toda la UPeU</option>
+            <option value="Facultad">Facultad - Solo una facultad</option>
+            <option value="Escuela">Escuela / Programa - Segun facultad</option>
+          </select>
+        </label>
+        <label>Facultad<input id="event-edit-faculty"></label>
+        <label>Fecha<input id="event-edit-date" type="date"></label>
+        <label>Hora<input id="event-edit-time" type="time"></label>
+        <label>Descripcion<textarea id="event-edit-description"></textarea></label>
+        <button type="submit" class="primary-button">Guardar cambios</button>
+      </form>
+      <div class="modal-actions">
+        <button class="primary-button" id="event-detail-edit" type="button">Editar evento</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="convert-class-modal">
+    <section class="modal">
+      <div class="panel-head">
+        <h2>Convertir a Maranatha Class</h2>
+        <button class="ghost-button" id="convert-class-close" type="button">Cerrar</button>
+      </div>
+      <form class="form" id="convert-class-form">
+        <label>Nombre comun de Maranatha Class
+          <input id="convert-class-name" placeholder="Confirmar o escribir nuevo nombre">
+        </label>
+        <label>Facultad
+          <input id="convert-class-faculty">
+        </label>
+        <label>Aula / lugar
+          <input id="convert-class-room" placeholder="Aula o lugar habitual">
+        </label>
+        <label>Grupos pequenos asociados
+          <div class="member-list" id="convert-class-groups"></div>
+        </label>
+        <button type="submit" class="primary-button">Crear Maranatha Class</button>
+      </form>
+    </section>
+  </div>
+  <script src="students-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
